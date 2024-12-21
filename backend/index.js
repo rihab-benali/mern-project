@@ -5,55 +5,57 @@ import authRoute from "./routes/auth.js";
 import usersRoute from "./routes/users.js";
 import hotelsRoute from "./routes/hotels.js";
 import roomsRoute from "./routes/rooms.js";
+import reservationRoute from "./routes/reservations.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-dotenv.config();  // Load environment variables
+dotenv.config(); // Load environment variables
 
 const app = express();
 
-// Middleware
-app.use(cors({
-  origin: 'http://localhost:3000',  // Frontend URL
-  credentials: true,  // Allow cookies if necessary
-}));
-app.use(express.json());  // Parse JSON request bodies
-app.use(cookieParser());  // Parse cookies
+const corsOptions = {
+  origin: ["http://localhost:3000", "http://localhost:3001"], // List both origins
+  credentials: true, // Allow credentials
+};
+
+app.use(cors(corsOptions));
+
+app.use(express.json()); // Parse JSON request bodies
+app.use(cookieParser()); // Parse cookies
 
 const connect = async () => {
-try {
+  try {
     await mongoose.connect(process.env.MONGO);
     console.log("connected to database");
   } catch (error) {
-    throw error; 
+    throw error;
   }
 };
 
 mongoose.connection.on("disconnected", () => {
-    console.log("mongoDB disconnected");
-  });
+  console.log("mongoDB disconnected");
+});
 
-//middlewares  
+//middlewares
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);
 app.use("/api/hotels", hotelsRoute);
 app.use("/api/rooms", roomsRoute);
+app.use("/api/reservations", reservationRoute);
 
 app.use((err, req, res, next) => {
-    const errorStatus = err.status || 500;
-    const errorMessage = err.message || "Something went wrong!";
-    return res.status(errorStatus).json({
-        success: false,
-        status: errorStatus,
-        message: errorMessage,
-        stack: err.stack
-    })
-   
- });
-
+  const errorStatus = err.status || 500;
+  const errorMessage = err.message || "Something went wrong!";
+  return res.status(errorStatus).json({
+    success: false,
+    status: errorStatus,
+    message: errorMessage,
+    stack: err.stack,
+  });
+});
 
 app.listen(8800, () => {
-    connect()
-    console.log("Connected to backend");
+  connect();
+  console.log("Connected to backend");
 });

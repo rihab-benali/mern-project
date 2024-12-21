@@ -12,6 +12,9 @@ import { AuthContext } from "./context/AuthContext";
 import { hotelColumns, roomColumns, userColumns } from "./datatablesource";
 import NewHotel from "./pages/newHotel/NewHotel";
 import NewRoom from "./pages/newRoom/NewRoom";
+import EditRoom from "./pages/editRoom/EditRoom"; // Add the import for EditRoom
+// import EditUser from "./pages/editUser/EditUser"; // Add the import for EditUser
+// import EditHotel from "./pages/editHotel/EditHotel"; // Add the import for EditHotel
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -65,6 +68,15 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              {/* Add the edit route for users
+              <Route
+                path=":userId/edit"
+                element={
+                  <ProtectedRoute>
+                    <EditUser />
+                  </ProtectedRoute>
+                }
+              /> */}
             </Route>
             <Route path="hotels">
               <Route
@@ -87,10 +99,19 @@ function App() {
                 path="new"
                 element={
                   <ProtectedRoute>
-                    <NewHotel  />
+                    <NewHotel />
                   </ProtectedRoute>
                 }
               />
+              {/* Add the edit route for hotels
+              <Route
+                path=":productId/edit"
+                element={
+                  <ProtectedRoute>
+                    <EditHotel />
+                  </ProtectedRoute>
+                }
+              /> */}
             </Route>
             <Route path="rooms">
               <Route
@@ -113,7 +134,27 @@ function App() {
                 path="new"
                 element={
                   <ProtectedRoute>
-                    <NewRoom  />
+                    <NewRoom />
+                  </ProtectedRoute>
+                }
+              />
+              {/* Add the edit route for rooms */}
+              <Route
+                path=":productId/edit"
+                element={
+                  <ProtectedRoute>
+                    <EditRoom />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+            {/* Reservations Routes */}
+            <Route path="reservations">
+              <Route
+                index
+                element={
+                  <ProtectedRoute>
+                    <List />
                   </ProtectedRoute>
                 }
               />

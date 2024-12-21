@@ -23,10 +23,22 @@ const Login = () => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
     try {
-      const res = await axios.post("http://localhost:8800/api/auth/login", credentials);
+      const res = await axios.post(
+        "http://localhost:8800/api/auth/login",
+        credentials
+      );
+
+      // The token is now returned in res.data.token
+      const token = res.data.token;
+
+      // Store the token in localStorage
+      localStorage.setItem("authToken", token);
+
+      // Set the token in the Axios default headers
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
       if (res.data.isAdmin) {
         dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
-
         navigate("/");
       } else {
         dispatch({

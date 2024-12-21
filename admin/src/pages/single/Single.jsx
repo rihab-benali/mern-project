@@ -48,8 +48,8 @@ const Single = () => {
           </div>
         </div>
         <div className="bottom">
-        <h1 className="title">Last Transactions</h1>
-          <List/>
+          <h1 className="title">Last Transactions</h1>
+          <h1>No Transactions Yet</h1>
         </div>
       </div>
     </div>

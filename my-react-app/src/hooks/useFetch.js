@@ -8,20 +8,11 @@ const useFetch = (url) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // Retrieve the token from localStorage (or cookies)
-      const token = localStorage.getItem("authToken");
       setLoading(true);
       try {
-        const res = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log("Data received:", res.data); // Debugging line
+        const res = await axios.get(url);
         setData(res.data);
       } catch (err) {
-        console.log("Error:", err); // Error logging for debugging
         setError(err);
       }
       setLoading(false);
@@ -32,15 +23,7 @@ const useFetch = (url) => {
   const reFetch = async () => {
     setLoading(true);
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
-      const parsedUserDetails = JSON.parse(user).otherDetails;
-
-      const res = await axios.get(url, {
-        headers: {
-          user: parsedUserDetails._id,
-        },
-      });
-
+      const res = await axios.get(url);
       setData(res.data);
     } catch (err) {
       setError(err);

@@ -1,4 +1,4 @@
-.homeContainer{
+.homeContainer {
   margin-top: 50px;
   display: flex;
   flex-direction: column;
@@ -6,7 +6,6 @@
   gap: 30px;
 }
 
-.homeTitle{
-  width: 1024px;
+.homeTitle {
   font-size: 20px;
 }

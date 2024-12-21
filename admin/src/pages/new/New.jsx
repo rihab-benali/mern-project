@@ -1,13 +1,12 @@
 import "./new.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
-import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useState } from "react";
 import axios from "axios";
 
 const New = ({ inputs, title }) => {
-  const [file, setFile] = useState("");
   const [info, setInfo] = useState({});
+  const [file, setFile] = useState(null); // File input is still here, but not used for Cloudinary
 
   const handleChange = (e) => {
     setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -15,29 +14,32 @@ const New = ({ inputs, title }) => {
 
   const handleClick = async (e) => {
     e.preventDefault();
-    const data = new FormData();
-    data.append("file", file);
-    data.append("upload_preset", "upload");
+
+    // If you want to handle file uploads or data that doesn't require cloudinary
+    const newUser = {
+      ...info,
+      img: file ? file.name : "", // If there's a file, store the file name (or adjust this as needed)
+    };
+
     try {
-      const uploadRes = await axios.post(
-        "https://api.cloudinary.com/v1_1/lamadev/image/upload",
-        data
-      );
+      // Retrieve the token from localStorage (or cookies)
+      const token = localStorage.getItem("authToken");
 
-      const { url } = uploadRes.data;
-
-      const newUser = {
-        ...info,
-        img: url,
-      };
-
-      await axios.post("http://localhost:8800/api/auth/register", newUser);
+      // Sending the form data without Cloudinary
+      await axios.post("http://localhost:8800/api/auth/register", newUser, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add token to the request headers
+        },
+      });
+      console.log("User created successfully", newUser);
+      // Reset the form
+      setInfo({});
+      setFile(null);
     } catch (err) {
-      console.log(err);
+      console.error("Error creating user:", err);
     }
   };
 
-  console.log(info);
   return (
     <div className="new">
       <Sidebar />
@@ -48,26 +50,24 @@ const New = ({ inputs, title }) => {
         </div>
         <div className="bottom">
           <div className="left">
+            {/* You can still display the file preview if needed */}
             <img
               src={
                 file
                   ? URL.createObjectURL(file)
                   : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
               }
-              alt=""
+              alt="Preview"
             />
           </div>
           <div className="right">
             <form>
               <div className="formInput">
-                <label htmlFor="file">
-                  Image: <DriveFolderUploadOutlinedIcon className="icon" />
-                </label>
+                <label htmlFor="file">Image: </label>
                 <input
                   type="file"
                   id="file"
                   onChange={(e) => setFile(e.target.files[0])}
-                  style={{ display: "none" }}
                 />
               </div>
 
@@ -92,4 +92,3 @@ const New = ({ inputs, title }) => {
 };
 
 export default New;
-
